@@ -7,9 +7,9 @@ const LOGIN = 'LOGIN';
 const reducer = (state:any,action:any) =>{
     switch (action.type){
         case LOGIN:
-            return {...state,isLoggedIn:true,authToken:action.payload.token}
+            return {...state,isLoggedIn:true,authToken:action.payload.token, username:action.payload.username}
         case LOGOUT:
-            return {...state, isLoggedIn:false , authToken:null}
+            return {...state, isLoggedIn:false , authToken:null, username:null}
         
     } 
 }
