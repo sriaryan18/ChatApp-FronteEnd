@@ -16,7 +16,6 @@ export default function Root() {
   const navigate = useNavigate();
   const [signUpModal,setSignUpModal] = useState(false);
   const [signInModal,setSignInModal] = useState(false);
-  const [isValidated,setIsValidated] = useState(false);
   
   const contextProvider:any = useContext(AppContext);
   const handleSignUp = ()=>{
@@ -33,17 +32,15 @@ export default function Root() {
   const handleCancelModalSignIN = ()=>{
     setSignInModal(false);
   }
-  console.log("I am context provider",contextProvider);
+  // console.log("I am context provider",contextProvider);
 
   const handleSignIn = async (value:any) =>{
     const apiResponse:any = await SignIN(value);
     setSignInModal(false);
     if(apiResponse?.data){
-        contextProvider?.dispatch({type:'LOGIN',payload:apiResponse.data});
-        navigate('/homepage');
-    }else{
-      navigate('/');
-    }
+        contextProvider?.dispatch({type:'LOGIN',payload:{'token':apiResponse.data,'username':value.username}});
+      }
+      navigate('/homepage');
   }
   
 

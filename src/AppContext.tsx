@@ -7,7 +7,7 @@ const LOGIN = 'LOGIN';
 const reducer = (state:any,action:any) =>{
     switch (action.type){
         case LOGIN:
-            return {...state,isLoggedIn:true,authToken:action.payload}
+            return {...state,isLoggedIn:true,authToken:action.payload.token}
         case LOGOUT:
             return {...state, isLoggedIn:false , authToken:null}
         
@@ -15,7 +15,11 @@ const reducer = (state:any,action:any) =>{
 }
 
 export default function AppProvider({children}:any) {
-  const initialState = {isLoggedIn:false,authToken:null};
+  const initialState = {
+    isLoggedIn:false,
+    authToken:null,
+    username:null
+    };
   const [state,dispatch] = useReducer(reducer,initialState);
 
 

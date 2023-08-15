@@ -18,7 +18,6 @@ const makeRequest = async (method: string, url: string, data?: any, customHeader
     params,
     headers: { ...instance.defaults.headers, ...customHeaders },
   };
-
   try {
     const response = await instance(config);
     return response;
