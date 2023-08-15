@@ -1,5 +1,16 @@
-const  SignUp = (value:any)=>{
-
+import api from "./Axios";
+export const  SignUp = async (value:any)=>{
+    const reqData ={    
+    "username":value.username,
+    "password":value.password,
+    "name":value.fullName,
+    "email":"sri.aryan18@gmail.com"
+    }
+    const response = await api.post("/user/register",reqData);
 }
 
-export default SignUp;
+export const CheckUserNameAvailable = async (username:any) =>{
+    console.log("csicnsc", username)
+    const response = await api.get(`/user/checkUserName?username=${username}`);
+    return response.data
+}

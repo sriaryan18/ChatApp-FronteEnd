@@ -1,24 +1,46 @@
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input } from 'antd';
+import debounce from 'lodash/debounce';
 
-export default function SignUpDetailsForm({onFinish,handleCancel}:any) {
+import {  CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
+import { useState } from 'react';
+
+
+
+export default function SignUpDetailsForm({onFinish,handleCancel,checkUserName}:any) {
+
+  const [availableUsername,setAvailableUsername] = useState(null); 
   const [form]=Form.useForm();
+  const debouncedCheckUsername = debounce(async (val)=>{
+    const res = await checkUserName(val.target.value);
+    setAvailableUsername(res);
+  },1000)
+  
+  const availableUsernameIcon = <CheckCircleTwoTone  />
+  const notAvailableUsernameIcon = <CloseCircleTwoTone />
+
   return (
-    <Form onFinish={onFinish} form={form}>
+    <Form onFinish={(formData)=>{onFinish(formData);form.resetFields();}} form={form}>
        <Form.Item style={{marginRight:10,width:"90%"}}
         rules={[
-          { required: true, message: "Please input Username" },
+          { required: true && ! availableUsername, message: "Please input Username" },
+          
         ]}
         label="Username" name="username"
+     
       >
         <Input
-          placeholder='Enter Username'
+          placeholder='Enter Username' 
+          onChange={debouncedCheckUsername}
+          suffix={availableUsername?availableUsernameIcon:availableUsername===false?notAvailableUsernameIcon:null}
+          
+
         />
       </Form.Item>
       <Form.Item name="fullName" label="Full Name" 
         style={{width:"90%"}} 
         rules={[{ required: true, message: 'Please input Full Name' }]}
       >
-        <Input placeholder='Full Name'/>
+        <Input placeholder='Full Name' />
       </Form.Item>
       <Form.Item name="mobileNumber" 
         label="Mobile Number" 
@@ -33,14 +55,24 @@ export default function SignUpDetailsForm({onFinish,handleCancel}:any) {
       >
           <Input placeholder='Mobile Number' maxLength={10} minLength={10} type='number'/>
       </Form.Item>
+       <Form.Item style={{marginRight:10,width:"90%"}}
+        rules={[
+          { required: true, message: "Please input Email" },
+        ]}
+        label="Email" name="email"
+      >
+        <Input
+          placeholder='Enter email' type='email'
+        />
+      </Form.Item>
       <Form.Item style={{marginRight:10,width:"90%"}}
         rules={[
           { required: true, message: "Please input Password" },
         ]}
         label="Password" name="password"
       >
-        <Input
-          placeholder='Enter password' type='password'
+        <Input.Password
+          placeholder='Enter password' type='password' 
         />
       </Form.Item>
      
