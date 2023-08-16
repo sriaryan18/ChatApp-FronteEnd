@@ -1,8 +1,17 @@
 import { Header } from 'antd/es/layout/layout';
 import ContackList from '../components/ContactList';
 import MessageArea from '../components/MessageArea';
+import { useContext } from 'react';
+import { AppContext } from '../AppContext';
 
 export default function Homepage() {
+
+  const appContext = useContext(AppContext);
+
+  const sendMessage = (msg:any)=>{
+    console.log("I am message",msg)
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column',flex:1, height:'98vh'}}>
       
@@ -15,7 +24,7 @@ export default function Homepage() {
           <ContackList/>
         </div>
         <div style={{ flex: '0.8', backgroundColor: '#e1e6e2' }}>
-          <MessageArea />
+          <MessageArea sendMessage={sendMessage}/>
           
         </div>
       </div>

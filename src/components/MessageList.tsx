@@ -56,14 +56,15 @@ export default function MessageList() {
                     <List.Item.Meta
                         title={
                             <div style={{display:'flex', flexDirection:'row', justifyContent:index%2==0?'flex-end':'flex-start'}}>
-                            <div style={{  backgroundColor:index%2==0?"#76b586":"#e6ede8", display:'flex', justifyContent:index%2==0?'flex-end':'flex-start', borderRadius:10, margin:15}}>
+                            <div style={{  backgroundColor:index%2==0?"#76b586":"white", display:'flex', justifyContent:index%2==0?'flex-end':'flex-start', borderRadius:10, margin:15}}>
                                 <h2 style={{margin:15}}>{item.title} </h2>
-                                
+                               
                             </div>
                             
                             </div>
                         }
-                    />
+                       
+                        />
                 );
             }}
         />

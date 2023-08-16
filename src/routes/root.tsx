@@ -8,6 +8,7 @@ import { SignIN } from "../utils/handleSignIn";
 import {  useNavigate } from "react-router-dom";
 import { Switch } from "antd";
 import { AppContext } from "../AppContext";
+import { makeMeOnline } from "../utils/SendSocketMessage";
 
 
 
@@ -18,6 +19,7 @@ export default function Root() {
   const [signInModal,setSignInModal] = useState(false);
   
   const contextProvider:any = useContext(AppContext);
+
   const handleSignUp = ()=>{
     setSignUpModal(true);
 
@@ -32,19 +34,28 @@ export default function Root() {
   const handleCancelModalSignIN = ()=>{
     setSignInModal(false);
   }
-  // console.log("I am context provider",contextProvider);
 
   const handleSignIn = async (value:any) =>{
     const apiResponse:any = await SignIN(value);
     setSignInModal(false);
     if(apiResponse?.data){
-        contextProvider?.dispatch({type:'LOGIN',payload:{'token':apiResponse.data,'username':value.username}});
+        contextProvider?.dispatch({type:'LOGIN',
+        payload:{
+          'token':apiResponse.data,
+          'username':value.username
+          }
+        }
+        );
       }
+      const onlineResponse = makeMeOnline(apiResponse.data,value.username);
+      contextProvider?.dispatch({
+        type:"ONLINE",
+        onlineResponse
+      })
       navigate('/homepage');
   }
-  
 
-  
+   
 
   return (
   <div style={containerStyle}>
