@@ -6,9 +6,8 @@ import {CheckUserNameAvailable, SignUp} from '../utils/handleSignUp' ;
 import SignInForm from "../components/SignInForm";
 import { SignIN } from "../utils/handleSignIn";
 import {  useNavigate } from "react-router-dom";
-import { Switch } from "antd";
 import { AppContext } from "../AppContext";
-import { makeMeOnline } from "../utils/SendSocketMessage";
+import {  triggerSockts } from "../utils/SendSocketMessage";
 
 
 
@@ -47,10 +46,11 @@ export default function Root() {
         }
         );
       }
-      const onlineResponse = makeMeOnline(apiResponse.data,value.username);
+      const onlineResponse = await triggerSockts(apiResponse.data,value.username);
+      console.log("I am onlineResponse",onlineResponse)
       contextProvider?.dispatch({
         type:"ONLINE",
-        onlineResponse
+        payload:{...onlineResponse}
       })
       navigate('/homepage');
   }

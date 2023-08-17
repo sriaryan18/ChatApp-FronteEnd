@@ -1,9 +1,10 @@
-import { Avatar, List } from 'antd';
+import { Avatar, FloatButton, List } from 'antd';
 import { useContext, useEffect, useState } from 'react'
 import { GetConnections } from '../utils/connections';
 import { AppContext } from '../AppContext';
+import { PlusOutlined } from '@ant-design/icons';
 
-export default function ContackList() {
+export default function ContactList({setCurrentActiveUser,showRequestModal}:any) {
   const context:any = useContext(AppContext);
   const [connections,setConnections]:any = useState(null);
   const [activeConnect,setActiveConnect]=useState<null | Number>(null);
@@ -35,14 +36,20 @@ export default function ContackList() {
     }
   },[connections]);
 
-  const handleConnectionClick = (index:Number)=>{
+  const handleConnectionClick = (index:number)=>{
     setActiveConnect(index);
+    setCurrentActiveUser(connections[index].username);
   }
+  
 
 
   return (
-    <div style={{overflowY:'auto', backgroundColor:'white', height:'90vh'}}>
-
+    <div style={{overflowY:'auto', backgroundColor:'white', height:'90vh',position:'relative'}}>
+      <FloatButton 
+        style={{position:'absolute', backgroundColor:'#7c7fd9' }} tooltip="Add New Connects"
+        icon={<PlusOutlined/>}
+        onClick={()=>{showRequestModal(true)}}
+       />  
      <List
     itemLayout="horizontal"
     dataSource={data}
@@ -69,11 +76,11 @@ export default function ContackList() {
         }//{<a href="https://ant.design">{item.title}</a>}
 
         />
+        
       </List.Item>
-      
-
     )}
   />
+
     </div>
   )
 }

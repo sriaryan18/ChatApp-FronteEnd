@@ -10,7 +10,6 @@ export const  SignUp = async (value:any)=>{
 }
 
 export const CheckUserNameAvailable = async (username:any) =>{
-    console.log("csicnsc", username)
     const response = await api.get(`/user/checkUserName?username=${username}`);
     return response.data
 }

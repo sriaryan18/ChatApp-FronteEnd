@@ -12,7 +12,7 @@ const reducer = (state:any,action:any) =>{
         case LOGOUT:
             return {...state, isLoggedIn:false , authToken:null, username:null};
         case ONLINE:
-          return {...state , ...action.payload}
+          return {...state , socket:action.payload.socket,isOnline:action.payload.isOnline}
         
     } 
 }
