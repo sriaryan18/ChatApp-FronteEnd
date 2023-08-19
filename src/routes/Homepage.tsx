@@ -1,27 +1,48 @@
-import { Header } from 'antd/es/layout/layout';
+import { Content, Header } from 'antd/es/layout/layout';
 import MessageArea from '../components/MessageArea';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../AppContext';
 import { listenFrindRequests, listenMessages, listenTyping } from '../Sockets/ListenRequests';
 import { sendConnectionRequest, sendMessage } from '../Sockets/SendMessages';
 import ContactList from '../components/ContactList';
-import { Input, Modal, message } from 'antd';
+import { Input, Layout, message } from 'antd';
 import ModalComp from '../components/Modal';
 import { CheckUserNameAvailable } from '../utils/handleSignUp';
+import Sider from 'antd/es/layout/Sider';
+import HeaderComponent from '../components/HeaderComponent';
 
 export default function Homepage() {
   const appContext:any = useContext(AppContext);
+  const [notification,setNotification] = useState<Array<any>>([]);
   const [activeUser,setActiveUser] = useState('khattu');  
   const [showSendConnectionRequestModal,setShowSendConnectionRequestModal] = useState(false);
   const [searchedUsername,setSearchedUsername] = useState("")
   const username = appContext.state.username;
   const socket = appContext?.state.socket;
 
-  if(socket){
-    listenFrindRequests(socket);
-    listenTyping(socket);
-    listenMessages(socket);
+  const  addToNotifaication = (data:any)=>{
+    setNotification(prevState=>{return [...prevState,data]});
   }
+
+  useEffect(()=>{
+    if(socket){
+      console.log("use effect at homepage")
+      listenFrindRequests(socket,addToNotifaication);
+      listenTyping(socket);
+      listenMessages(socket);
+    }
+   
+    return ()=>{
+        
+      if(socket){
+        socket.off("friendRequest");
+        socket.off("typing-personal");
+        socket.off('message-personal')
+      }
+      }
+    
+  },[socket]);
+ 
 
   const handleSendRequest = async ()=>{
     if(searchedUsername){
@@ -54,32 +75,40 @@ export default function Homepage() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column',flex:1, height:'98vh'}}>
-      
-      <Header title='ChatApp' style={{backgroundColor:'#7c7fd9'}} >
-        
-      </Header>
-
-      <div style={{ display: 'flex'}}>
-        <div style={{ flex: '0.2', backgroundColor: '#e1e6e2' }}>
-          <ContactList setCurrentActiveUser={setActiveUser} showRequestModal = {setShowSendConnectionRequestModal}/>
-        </div>
-        <div style={{ flex: '0.8', backgroundColor: '#e1e6e2' }}>
+    <Layout style={{display:'flex',flex:1,height:'98vh'}}>
+    <Header style={{ display: 'flex',background:'gray'}}>
+      <HeaderComponent username={username} notifications ={notification}/>
+    
+    </Header>
+    <Content style={{background:'green',flex:1,display:'flex'}}>
+      <Layout >
+        <Sider style={{background: '#e1e6e2',display:'flex',flexDirection:'column'}} width={400}>
+            <ContactList 
+            setCurrentActiveUser={setActiveUser} 
+            showRequestModal = {setShowSendConnectionRequestModal}
+            />
+          
+        </Sider>
+        <Content style={{background:"#e1e6e2" }}>
           <MessageArea sendMessage={sendMessageToUser}/>
-        </div>
-        <ModalComp open={showSendConnectionRequestModal}
-         onCancel={()=>setShowSendConnectionRequestModal(false)}
-          onOk ={handleSendRequest}
-         >
-          <h2>Enter Username to send connection request</h2>
-          <Input 
-            value={searchedUsername}
-            onChange={handleUsernameChange}
-            onPressEnter={handleSendRequest}
-           
-          />
-        </ModalComp>
-      </div>
-    </div>
-  );
+          <ModalComp open={showSendConnectionRequestModal}
+              onCancel={()=>setShowSendConnectionRequestModal(false)}
+                onOk ={handleSendRequest}
+              >
+                <h2>Username</h2>
+                <Input 
+                  value={searchedUsername}
+                  onChange={handleUsernameChange}
+                  onPressEnter={handleSendRequest}
+                  allowClear
+                  style={{width:'80%'}}
+                  placeholder='Username'
+                />
+              </ModalComp>
+        </Content>
+      </Layout>
+    </Content>
+  </Layout>
+   );
 }
+

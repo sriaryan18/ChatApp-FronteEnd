@@ -1,6 +1,8 @@
-export const listenFrindRequests = (socket:any) =>{
+export const listenFrindRequests = (socket:any,setNotification:Function) =>{
+    console.log("friendrequet Listening.....")
     socket.on('friendRequest',(data:any)=>{
-        console.log('I received a friend request',data)
+        console.log('I received a friend request',data);
+        setNotification(data);
     });
 }   
 
