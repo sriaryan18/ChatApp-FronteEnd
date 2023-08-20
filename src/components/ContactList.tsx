@@ -1,46 +1,24 @@
 import { Avatar, FloatButton, List } from 'antd';
-import { useContext, useEffect, useState } from 'react'
-import { GetConnections } from '../utils/connections';
-import { AppContext } from '../AppContext';
+import {  useEffect, useState } from 'react'
+
 import { PlusOutlined } from '@ant-design/icons';
 
-export default function ContactList({setCurrentActiveUser,showRequestModal}:any) {
-  const context:any = useContext(AppContext);
-  const [connections,setConnections]:any = useState(null);
+export default function ContactList({setCurrentActiveUserChatId,showRequestModal,connections,setActiveUserName}:any) {
   const [activeConnect,setActiveConnect]=useState<null | Number>(null);
   const [data,setData]  = useState<any>([]);
-  const token = context?.state?.authToken;
-  const username = context?.state?.username;
 
-  useEffect(()=>{
-    async function fetchConnections() {
-      if(!connections){
-        const response:any =  await GetConnections(username,token);
-        if(response.status == 200){
-          setConnections(response.data);
-        }
-      }
-    } 
-    fetchConnections();
-    
-
-  },[]);
-
+ 
   useEffect(()=>{
     if(connections){
-       const d=connections.map((item:any)=>{
-        return {
-          title:item?.username
-        }
-       });
-       const dataSource = transformToDataSource(d);
-       setData(dataSource);
+      const ds = transformToDataSource(connections);
+      setData(ds);
     }
   },[connections]);
 
   const handleConnectionClick = (index:number)=>{
     setActiveConnect(index);
-    setCurrentActiveUser(connections[index].username);
+    setCurrentActiveUserChatId(connections[index].chatId);
+    setActiveUserName(connections[index].username);
   }
   
   const transformToDataSource =(data:[])=>{
@@ -50,7 +28,7 @@ export default function ContactList({setCurrentActiveUser,showRequestModal}:any)
 
   return (
     <div style={{overflowY:'auto', 
-    background:'white',
+    background:'#e9f0e6',
     position:'relative',display:'flex',
     flex:1,height:"100%", 
     flexDirection:'column',

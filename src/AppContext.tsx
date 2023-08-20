@@ -8,7 +8,7 @@ const ONLINE = "ONLINE"
 const reducer = (state:any,action:any) =>{
     switch (action.type){
         case LOGIN:
-            return {...state,isLoggedIn:true,authToken:action.payload.token, username:action.payload.username}
+            return {...state,isLoggedIn:true,authToken:action.payload.token, userInfo:action.payload.userInfo}
         case LOGOUT:
             return {...state, isLoggedIn:false , authToken:null, username:null};
         case ONLINE:
@@ -21,7 +21,7 @@ export default function AppProvider({children}:any) {
   const initialState = {
     isLoggedIn:false,
     authToken:null,
-    username:null,
+    userInfo:null,
     isOnline:false,
     socket:null
     };

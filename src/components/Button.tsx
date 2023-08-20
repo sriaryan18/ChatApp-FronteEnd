@@ -4,7 +4,7 @@ import { Button, Space } from "antd";
 interface Props {
   type: "primary" | "link";
   styles?:any;
-  label:String;
+  label:string;
   onClick?:()=>void;
 }
 

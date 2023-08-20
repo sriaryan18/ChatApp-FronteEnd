@@ -1,12 +1,20 @@
 import { Avatar, Badge, Dropdown, Image, MenuProps } from "antd";
-import DP from '../assets/Aryan.jpg';  // to be imported based on user profile
 import { BellOutlined, MoreOutlined } from "@ant-design/icons";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../AppContext";
+import ModalComp from "./Modal";
+import NotificationExpanded from "./NotificationExpanded";
 
 export default function  HeaderComponent({username,notifications}:any){
-    console.log("I am count",notifications.length);
-      const items: MenuProps['items']=notifications.map((item:any,index:number)=>{
+
+    const appContext:any = useContext(AppContext);
+    const [showNotificationModal,setShowNotificationModal] = useState(false);
+     const [currentIndex,setCurrentIndex]  = useState<number | null>(null);  
+     const [notificationItems,setNotificationItems] = useState<any>([]);
+    useEffect(()=>{
+        const items: MenuProps['items']=notifications.map((item:any,index:number)=>{
             return {
-                label:<a>
+                label:<a onClick={()=>{setShowNotificationModal(true);setCurrentIndex(index)}}>
                     <span style={{fontFamily:'cursive',color:'green', margin:10}}>
                         {item?.['from' as keyof object]}
                     </span> 
@@ -14,12 +22,42 @@ export default function  HeaderComponent({username,notifications}:any){
                     </a>,
                 key:index
             }
-      })
-      console.log("I am notificationitems",items);
+      });
+      setNotificationItems({items});
+
+    },[notifications]);
+
+    const acceptRequest = ()=>{
+        console.log("I am accepted");
+        setShowNotificationModal(false); 
+    }
+
+    const rejectRequest  = ()=>{
+        console.log("I am rejected");
+        setShowNotificationModal(false);
+    }
+
+    console.log("I am count",notifications.length);
+     
+      console.log("I am notificationitems",notifications,appContext);  
     return(
         <div style={{display:'flex',flex:1,justifyContent:'space-between'}}>
-            <div style={{display:'flex', alignItems:'center',}}> 
-                    <Image src={DP}
+            <ModalComp 
+                visible ={showNotificationModal}  
+                onCancel = {()=>setShowNotificationModal(false)}
+                okButtonProps={{style:{display:'none'}}}
+                cancelButtonProps={{ style: { display: 'none' } }}
+                bodyStyle={{minHeight: 300}}    
+                
+            >
+                <NotificationExpanded 
+                    notification={notifications[currentIndex?currentIndex:0]}
+                    accept={acceptRequest}
+                    reject={rejectRequest}
+                />   
+            </ModalComp>
+            <div style={{display:'flex', alignItems:'center'}}> 
+                    <Image src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${Math.random()}`} 
                     style={{ 
                         borderRadius:50, 
                         height:50,width:50, 
@@ -36,8 +74,8 @@ export default function  HeaderComponent({username,notifications}:any){
                 <MoreOutlined  style={{ fontSize: '35px', color: 'white',cursor:'pointer'}} 
                     onClick={()=>console.log( )}
                 />
-                <Dropdown trigger={['click']} menu={{items}} disabled={notifications.length !== 0?false:true}>
-                    <a onClick={()=>console.log('ix')}>
+                <Dropdown trigger={['click']} menu={notificationItems} >
+                  <a onClick={()=>console.log('ix')}>
                         <Badge count={notifications.length } 
                             offset={[10, 10]} 
                             style={{marginRight:10}}>

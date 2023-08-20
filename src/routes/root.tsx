@@ -38,15 +38,17 @@ export default function Root() {
     const apiResponse:any = await SignIN(value);
     setSignInModal(false);
     if(apiResponse?.data){
-        contextProvider?.dispatch({type:'LOGIN',
-        payload:{
-          'token':apiResponse.data,
-          'username':value.username
-          }
+        contextProvider?.dispatch({
+          type:'LOGIN',
+          payload:{
+            'token':apiResponse.data.token,
+            'userInfo':{...apiResponse.data.userInfo},
+          
+            }
         }
         );
       }
-      const onlineResponse = await triggerSockts(apiResponse.data,value.username);
+      const onlineResponse = await triggerSockts(apiResponse.data.token,value.username);
       console.log("I am onlineResponse",onlineResponse)
       contextProvider?.dispatch({
         type:"ONLINE",

@@ -10,38 +10,63 @@ import ModalComp from '../components/Modal';
 import { CheckUserNameAvailable } from '../utils/handleSignUp';
 import Sider from 'antd/es/layout/Sider';
 import HeaderComponent from '../components/HeaderComponent';
+import { GetConnections, GetNotifications } from '../utils/connections';
 
 export default function Homepage() {
   const appContext:any = useContext(AppContext);
-  const [notification,setNotification] = useState<Array<any>>([]);
-  const [activeUser,setActiveUser] = useState('khattu');  
+  const [notifications,setNotifications] = useState<Array<any>>([]);
+  const [connections,setConnections]:any = useState(null)
+  const [activeUserChatId,setActiveUserChatId] = useState('khattu');  
+  const [activeUserName,setActiveUserName] = useState('khattu')
   const [showSendConnectionRequestModal,setShowSendConnectionRequestModal] = useState(false);
   const [searchedUsername,setSearchedUsername] = useState("")
-  const username = appContext.state.username;
+  const username = appContext.state.userInfo.username;
   const socket = appContext?.state.socket;
+  const token = appContext?.state?.authToken;
+
 
   const  addToNotifaication = (data:any)=>{
-    setNotification(prevState=>{return [...prevState,data]});
+
+    console.log("I am notifs",data);
+    setNotifications((prevState: any)=>{return [...prevState,data]});
   }
 
   useEffect(()=>{
-    if(socket){
-      console.log("use effect at homepage")
-      listenFrindRequests(socket,addToNotifaication);
-      listenTyping(socket);
-      listenMessages(socket);
-    }
+    async function fetchConnections() {
+      if(!connections){
+        const response:any =  await GetConnections(username,token);
+        if(response.status == 200){
+          setConnections(response.data);
+        }
+      }
+    } 
+    async function getNotifications() {
+      const notifs = await GetNotifications(token,username,0);
+      if(notifs.status === 200){
+          setNotifications(()=>[...notifs?.["data" as keyof object]]);
+      }  
+  };
+  
+  
+  if(socket){
+    console.log("use effect at homepage")
+    listenFrindRequests(socket,addToNotifaication);
+    listenTyping(socket);
+    listenMessages(socket);
+  }
+  getNotifications();
+    fetchConnections();
    
     return ()=>{
         
       if(socket){
         socket.off("friendRequest");
         socket.off("typing-personal");
-        socket.off('message-personal')
+        socket.off('message-personal');
       }
       }
     
-  },[socket]);
+  },[]);
  
 
   const handleSendRequest = async ()=>{
@@ -67,7 +92,7 @@ export default function Homepage() {
   const sendMessageToUser = (msg:any)=>{
     console.log("I am message",msg  );
     let messageToSend = {
-      to:activeUser , // this will be fetched from a useState
+      to:activeUserName , // this will be fetched from a useState
       message:msg,
       from:username
     }
@@ -75,40 +100,45 @@ export default function Homepage() {
   }
 
   return (
-    <Layout style={{display:'flex',flex:1,height:'98vh'}}>
-    <Header style={{ display: 'flex',background:'gray'}}>
-      <HeaderComponent username={username} notifications ={notification}/>
-    
-    </Header>
-    <Content style={{background:'green',flex:1,display:'flex'}}>
-      <Layout >
-        <Sider style={{background: '#e1e6e2',display:'flex',flexDirection:'column'}} width={400}>
-            <ContactList 
-            setCurrentActiveUser={setActiveUser} 
-            showRequestModal = {setShowSendConnectionRequestModal}
-            />
-          
-        </Sider>
-        <Content style={{background:"#e1e6e2" }}>
-          <MessageArea sendMessage={sendMessageToUser}/>
-          <ModalComp open={showSendConnectionRequestModal}
-              onCancel={()=>setShowSendConnectionRequestModal(false)}
-                onOk ={handleSendRequest}
-              >
-                <h2>Username</h2>
-                <Input 
-                  value={searchedUsername}
-                  onChange={handleUsernameChange}
-                  onPressEnter={handleSendRequest}
-                  allowClear
-                  style={{width:'80%'}}
-                  placeholder='Username'
-                />
-              </ModalComp>
-        </Content>
+      <Layout style={{display:'flex',flex:1,height:'94vh',marginRight:30,marginLeft:30, margin:30 }}>
+        <Header style={{ display: 'flex',background:'gray'}}>
+          <HeaderComponent 
+            username={username}
+            notifications={notifications}
+          />
+        </Header>
+      <Content style={{background:'green',flex:1,display:'flex'}}>
+        <Layout >
+          <Sider style={{background: '#e1e6e2',display:'flex',flexDirection:'column', border:"2px solid white", }} width={"25%"}>
+              <ContactList 
+                setCurrentActiveUser={setActiveUserChatId} 
+                showRequestModal = {setShowSendConnectionRequestModal}
+                setActiveUserName={setActiveUserName}
+                connections = {connections}
+              />
+            
+          </Sider>
+          <Content style={{background:"#e1e6e2" }}>
+            <MessageArea sendMessage={sendMessageToUser}/>
+            <ModalComp open={showSendConnectionRequestModal}
+                onCancel={()=>setShowSendConnectionRequestModal(false)}
+                  onOk ={handleSendRequest}
+                >
+                  <h2>Username</h2>
+                  <Input 
+                    value={searchedUsername}
+                    onChange={handleUsernameChange}
+                    onPressEnter={handleSendRequest}
+                    allowClear
+                    style={{width:'80%'}}
+                    placeholder='Username'
+                  />
+                </ModalComp>
+          </Content>
+        </Layout>
+      </Content>
       </Layout>
-    </Content>
-  </Layout>
+
    );
 }
 

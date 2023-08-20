@@ -3,7 +3,7 @@ import { Modal } from 'antd';
 
 export default function ModalComp({children,...modalProps}:any) {
   return (
-    <Modal {...modalProps}  >
+    <Modal {...modalProps} >
       {children}
     </Modal>
   )

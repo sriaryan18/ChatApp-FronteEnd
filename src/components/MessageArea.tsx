@@ -16,7 +16,7 @@ export default function MessageArea({sendMessage}:any) {
   }
  
   return (
-   <div style={{height:'90vh',display:'flex', flexDirection:'column'}}>
+   <div style={{height:'88vh',display:'flex', flexDirection:'column'}}>
       <div style={{display:'flex',flex:0.92,overflowY:'auto'}}>
         <MessageList/>
       </div>
