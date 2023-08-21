@@ -16,7 +16,7 @@ export default function  HeaderComponent({username,notifications}:any){
             return {
                 label:<a onClick={()=>{setShowNotificationModal(true);setCurrentIndex(index)}}>
                     <span style={{fontFamily:'cursive',color:'green', margin:10}}>
-                        {item?.['from' as keyof object]}
+                        {item?.['originatedFromUsername' as keyof object]}
                     </span> 
                         Wants to connect
                     </a>,
@@ -50,11 +50,11 @@ export default function  HeaderComponent({username,notifications}:any){
                 bodyStyle={{minHeight: 300}}    
                 
             >
-                <NotificationExpanded 
-                    notification={notifications[currentIndex?currentIndex:0]}
+                {currentIndex !== null?<NotificationExpanded 
+                    notification={notifications[currentIndex]}
                     accept={acceptRequest}
                     reject={rejectRequest}
-                />   
+                />:null }  
             </ModalComp>
             <div style={{display:'flex', alignItems:'center'}}> 
                     <Image src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${Math.random()}`} 

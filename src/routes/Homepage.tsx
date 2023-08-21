@@ -11,6 +11,7 @@ import { CheckUserNameAvailable } from '../utils/handleSignUp';
 import Sider from 'antd/es/layout/Sider';
 import HeaderComponent from '../components/HeaderComponent';
 import { GetConnections, GetNotifications } from '../utils/connections';
+import { constants } from '../utils/Constants';
 
 export default function Homepage() {
   const appContext:any = useContext(AppContext);
@@ -77,7 +78,7 @@ export default function Homepage() {
           setSearchedUsername("");
           return;
       }else{
-         sendConnectionRequest(socket,{to:searchedUsername,from:username});
+         sendConnectionRequest(socket,{destinatedUsername:searchedUsername,originatedFromUsername:username,type:constants.REQUEST_TYPE});
       }
     }
     setSearchedUsername("");

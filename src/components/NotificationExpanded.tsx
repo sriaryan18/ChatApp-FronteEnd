@@ -7,7 +7,7 @@ export default function NotificationExpanded({notification,accept,reject}:any){
             <div style={{display:'flex',flexDirection:'column', alignItems:'center'}}>
 
                 <h2>
-                    <span style={{fontFamily:'cursive',color:'green', margin:10}}>{notification.from}</span>
+                    <span style={{fontFamily:'cursive',color:'green', margin:10}}>{notification?.["originatedFromUsername" as keyof object]}</span>
                     {notification.type === 'accepted'?"accepted your request":"wants to connect"}
                     
                 </h2>
