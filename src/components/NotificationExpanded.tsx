@@ -1,15 +1,14 @@
-import { Avatar, Popconfirm } from "antd";
+import { Avatar } from "antd";
 import ButtonComp from "./Button";
 
 export default function NotificationExpanded({notification,accept,reject}:any){
+    console.log("I am notifmcsmc",notification.type);
     return (
         <div style={{display:'flex', flex:1, flexDirection:'column',justifyContent:'space-between' }}>
             <div style={{display:'flex',flexDirection:'column', alignItems:'center'}}>
-
                 <h2>
                     <span style={{fontFamily:'cursive',color:'green', margin:10}}>{notification?.["originatedFromUsername" as keyof object]}</span>
-                    {notification.type === 'accepted'?"accepted your request":"wants to connect"}
-                    
+                    {notification.type == 'accept'?"accepted your request":"wants to connect"}
                 </h2>
                 <Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${Math.random()}`} 
                     size={200} 
@@ -17,7 +16,7 @@ export default function NotificationExpanded({notification,accept,reject}:any){
                 />
             </div>
             {
-                notification.type ==='accepted'?
+                notification.type ==='accept'?
                 <>
                 </>:
                 <div style={{display:'flex', flex:0.1,justifyContent:'space-around'}}>
@@ -27,7 +26,7 @@ export default function NotificationExpanded({notification,accept,reject}:any){
                         label="accept"
                         key={0} 
                         
-                        onClick={accept}
+                        onClick={()=>accept(notification?.["originatedFromUsername" as keyof object],notification?.["type   " as keyof object])}
                     />
                      <ButtonComp 
                         type="link" 

@@ -3,7 +3,7 @@ import MessageArea from '../components/MessageArea';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../AppContext';
 import { listenFrindRequests, listenMessages, listenTyping } from '../Sockets/ListenRequests';
-import { sendConnectionRequest, sendMessage } from '../Sockets/SendMessages';
+import { sendConnectionRequestNotifs, sendMessage } from '../Sockets/SendMessages';
 import ContactList from '../components/ContactList';
 import { Input, Layout, message } from 'antd';
 import ModalComp from '../components/Modal';
@@ -28,9 +28,21 @@ export default function Homepage() {
 
   const  addToNotifaication = (data:any)=>{
 
-    console.log("I am notifs",data);
     setNotifications((prevState: any)=>{return [...prevState,data]});
   }
+
+  const deleteNotification =(originatedFromUsername:string,type:string)=>{
+    let notifArr = [...notifications];
+  
+    for(let i=0;i<notifArr.length;i++){
+        if(notifArr[i].originatedFromUsername === originatedFromUsername && notifArr[i].type === type){
+            notifArr.splice(i,1);break;
+        }
+    }
+    setNotifications((p)=>{return [...notifArr]});
+    console.log(notifArr)
+}
+  
 
   useEffect(()=>{
     async function fetchConnections() {
@@ -72,13 +84,13 @@ export default function Homepage() {
 
   const handleSendRequest = async ()=>{
     if(searchedUsername){
-      const res=await CheckUserNameAvailable(searchedUsername);
+      const res=await CheckUserNameAvailable(searchedUsername);  // if the username is valid then only I will send the request
       if(res == true){
           message.error("No Username available");
           setSearchedUsername("");
           return;
       }else{
-         sendConnectionRequest(socket,{destinatedUsername:searchedUsername,originatedFromUsername:username,type:constants.REQUEST_TYPE});
+        sendConnectionRequestNotifs(socket,{destinatedUsername:searchedUsername,originatedFromUsername:username,type:constants.REQUEST_TYPE});
       }
     }
     setSearchedUsername("");
@@ -100,12 +112,15 @@ export default function Homepage() {
     sendMessage(socket,messageToSend);
   }
 
+
+
   return (
       <Layout style={{display:'flex',flex:1,height:'94vh',marginRight:30,marginLeft:30, margin:30 }}>
         <Header style={{ display: 'flex',background:'gray'}}>
           <HeaderComponent 
             username={username}
             notifications={notifications}
+            deleteNotification={deleteNotification}
           />
         </Header>
       <Content style={{background:'green',flex:1,display:'flex'}}>

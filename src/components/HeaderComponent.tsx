@@ -4,13 +4,18 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../AppContext";
 import ModalComp from "./Modal";
 import NotificationExpanded from "./NotificationExpanded";
+import { sendConnectionRequestNotifs } from "../Sockets/SendMessages";
+import { AddOrDeleteConnection } from "../utils/connections";
+import { constants } from "../utils/Constants";
 
-export default function  HeaderComponent({username,notifications}:any){
+export default function  HeaderComponent({username,notifications,deleteNotification}:any){
 
     const appContext:any = useContext(AppContext);
     const [showNotificationModal,setShowNotificationModal] = useState(false);
-     const [currentIndex,setCurrentIndex]  = useState<number | null>(null);  
-     const [notificationItems,setNotificationItems] = useState<any>([]);
+    const [currentIndex,setCurrentIndex]  = useState<number | null>(null);  
+    const [notificationItems,setNotificationItems] = useState<any>([]);
+    const socket  = appContext.state.socket;
+    const token = appContext.state.authToken;
     useEffect(()=>{
         const items: MenuProps['items']=notifications.map((item:any,index:number)=>{
             return {
@@ -18,7 +23,7 @@ export default function  HeaderComponent({username,notifications}:any){
                     <span style={{fontFamily:'cursive',color:'green', margin:10}}>
                         {item?.['originatedFromUsername' as keyof object]}
                     </span> 
-                        Wants to connect
+                        {item?.["type" as keyof object] === "request"?"Wants to connect":"Accepted You Invite!!"}
                     </a>,
                 key:index
             }
@@ -27,19 +32,31 @@ export default function  HeaderComponent({username,notifications}:any){
 
     },[notifications]);
 
-    const acceptRequest = ()=>{
+   
+
+    const acceptRequest = async (destinatedUsername:string,type:string)=>{
         console.log("I am accepted");
+
+        const msg = {
+            destinatedUsername,
+            originatedFromUsername:username,
+            type:constants.ACCEPT_TYPE
+        }
+
+        sendConnectionRequestNotifs(socket,msg);
         setShowNotificationModal(false); 
+        const res = await AddOrDeleteConnection(token,destinatedUsername,username,constants.REQUEST_TYPE);
+        if(res.status === 200){
+            console.log("I am response of add or delete ",destinatedUsername);
+            
+            deleteNotification(destinatedUsername,type);
+        }
     }
 
     const rejectRequest  = ()=>{
         console.log("I am rejected");
         setShowNotificationModal(false);
-    }
-
-    console.log("I am count",notifications.length);
-     
-      console.log("I am notificationitems",notifications,appContext);  
+    }     
     return(
         <div style={{display:'flex',flex:1,justifyContent:'space-between'}}>
             <ModalComp 

@@ -30,3 +30,18 @@ export const GetNotifications = async(token:string,username:string,offset:number
     // console.log("I am response of get-notifications api",response)
     return response;
 }
+
+export const AddOrDeleteConnection = async(token:string,originatedFromUsernamr:string,desitinatedUsername:string,type:string)=>{
+        if(!token){
+            return {
+                error:'Not Authorized',
+                status:400
+            }
+           
+        }
+        const requestHeader = {
+            'Authorization':token
+        }
+        const res = await api.get(`user/notifications/request-accepted?originatedFromUsername=${originatedFromUsernamr}&destinatedUsername=${desitinatedUsername}&type=${type}`,null,requestHeader);
+        return res;
+}

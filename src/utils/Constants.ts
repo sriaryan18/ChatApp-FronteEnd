@@ -1,3 +1,4 @@
 export const constants={
-    REQUEST_TYPE:'request'
+    REQUEST_TYPE:'request',
+    ACCEPT_TYPE:'accept'
 }
