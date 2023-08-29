@@ -19,7 +19,7 @@ export default function  HeaderComponent({username,notifications,deleteNotificat
     useEffect(()=>{
         const items: MenuProps['items']=notifications.map((item:any,index:number)=>{
             return {
-                label:<a onClick={()=>{setShowNotificationModal(true);setCurrentIndex(index)}}>
+                label:<a onClick={()=>{handleClickOnNotificationItem(index,item);}}>
                     <span style={{fontFamily:'cursive',color:'green', margin:10}}>
                         {item?.['originatedFromUsername' as keyof object]}
                     </span> 
@@ -32,23 +32,36 @@ export default function  HeaderComponent({username,notifications,deleteNotificat
 
     },[notifications]);
 
-   
+    const deleteAcceptRequestNotification = async (username:string,originatedFromUsername:string)=>{
+        const res = await AddOrDeleteConnection(token,originatedFromUsername,username,constants.ACCEPT_TYPE);
+        if(res.status === 200){
+            console.log("I am response of add or delete ",username);   
+            deleteNotification(originatedFromUsername,constants.ACCEPT_TYPE);
+        }
+
+    }
+
+    const handleClickOnNotificationItem = async  (index:number,item:any)=>{
+        setShowNotificationModal(true);
+        setCurrentIndex(index);
+        if(item?.["type" as keyof object]==constants.ACCEPT_TYPE){
+            setShowNotificationModal(false);
+            await deleteAcceptRequestNotification(username,item?.['originatedFromUsername' as keyof object]);
+    }}
 
     const acceptRequest = async (destinatedUsername:string,type:string)=>{
-        console.log("I am accepted");
-
         const msg = {
             destinatedUsername,
             originatedFromUsername:username,
             type:constants.ACCEPT_TYPE
-        }
-
-        sendConnectionRequestNotifs(socket,msg);
+            }
+        if(type === 'request')
+            sendConnectionRequestNotifs(socket,msg);
         setShowNotificationModal(false); 
+
         const res = await AddOrDeleteConnection(token,destinatedUsername,username,constants.REQUEST_TYPE);
         if(res.status === 200){
-            console.log("I am response of add or delete ",destinatedUsername);
-            
+            console.log("I am response of add or delete ",destinatedUsername);   
             deleteNotification(destinatedUsername,type);
         }
     }
@@ -67,7 +80,7 @@ export default function  HeaderComponent({username,notifications,deleteNotificat
                 bodyStyle={{minHeight: 300}}    
                 
             >
-                {currentIndex !== null?<NotificationExpanded 
+                {currentIndex !== null && notifications.length>0?<NotificationExpanded 
                     notification={notifications[currentIndex]}
                     accept={acceptRequest}
                     reject={rejectRequest}

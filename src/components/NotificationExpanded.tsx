@@ -2,8 +2,9 @@ import { Avatar } from "antd";
 import ButtonComp from "./Button";
 
 export default function NotificationExpanded({notification,accept,reject}:any){
-    console.log("I am notifmcsmc",notification.type);
+    
     return (
+        
         <div style={{display:'flex', flex:1, flexDirection:'column',justifyContent:'space-between' }}>
             <div style={{display:'flex',flexDirection:'column', alignItems:'center'}}>
                 <h2>
@@ -26,7 +27,11 @@ export default function NotificationExpanded({notification,accept,reject}:any){
                         label="accept"
                         key={0} 
                         
-                        onClick={()=>accept(notification?.["originatedFromUsername" as keyof object],notification?.["type   " as keyof object])}
+                        onClick={()=>{
+                            accept(notification?.["originatedFromUsername" as keyof object],
+                            notification?.["type" as keyof object]);
+                            
+                        }}
                     />
                      <ButtonComp 
                         type="link" 

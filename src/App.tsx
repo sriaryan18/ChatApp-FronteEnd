@@ -6,8 +6,6 @@ import ProtectedRoutes from "./HOC/ProtectedRoutes"
 
 
 function App() {
-
- 
   return(
     <>
      <AppProvider>

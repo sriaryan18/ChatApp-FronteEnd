@@ -33,14 +33,13 @@ export default function Homepage() {
 
   const deleteNotification =(originatedFromUsername:string,type:string)=>{
     let notifArr = [...notifications];
-  
     for(let i=0;i<notifArr.length;i++){
         if(notifArr[i].originatedFromUsername === originatedFromUsername && notifArr[i].type === type){
             notifArr.splice(i,1);break;
         }
     }
     setNotifications((p)=>{return [...notifArr]});
-    console.log(notifArr)
+    console.log(notifArr);
 }
   
 
