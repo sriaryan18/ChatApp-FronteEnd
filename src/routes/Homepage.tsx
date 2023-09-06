@@ -12,12 +12,14 @@ import Sider from 'antd/es/layout/Sider';
 import HeaderComponent from '../components/HeaderComponent';
 import { GetConnections, GetNotifications } from '../utils/connections';
 import { constants } from '../utils/Constants';
+import { GetMessagesFromChatId } from '../utils/Messages';
 
 export default function Homepage() {
   const appContext:any = useContext(AppContext);
   const [notifications,setNotifications] = useState<Array<any>>([]);
   const [connections,setConnections]:any = useState(null)
   const [activeUserChatId,setActiveUserChatId] = useState('khattu');  
+  const [messagesOfActiveChat,setMessagesOfActiveChat] = useState<Array<any>>([])
   const [activeUserName,setActiveUserName] = useState('khattu')
   const [showSendConnectionRequestModal,setShowSendConnectionRequestModal] = useState(false);
   const [searchedUsername,setSearchedUsername] = useState("")
@@ -111,6 +113,15 @@ export default function Homepage() {
     sendMessage(socket,messageToSend);
   }
 
+  const fetchMessages  = async (chatID:string)=>{
+      const  messagesOfChat:any = await GetMessagesFromChatId(chatID,token);
+      if(messagesOfChat.status === 200){
+        setMessagesOfActiveChat(messagesOfChat.data);
+      }
+      else{
+        message.error("Error fetching chats ");
+      }
+  }
 
 
   return (
@@ -126,10 +137,11 @@ export default function Homepage() {
         <Layout >
           <Sider style={{background: '#e1e6e2',display:'flex',flexDirection:'column', border:"2px solid white", }} width={"25%"}>
               <ContactList 
-                setCurrentActiveUser={setActiveUserChatId} 
+                setCurrentActiveUserChatId={setActiveUserChatId} 
                 showRequestModal = {setShowSendConnectionRequestModal}
                 setActiveUserName={setActiveUserName}
                 connections = {connections}
+                fetchMessages={fetchMessages}
               />
             
           </Sider>

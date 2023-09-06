@@ -3,7 +3,7 @@ import {  useEffect, useState } from 'react'
 
 import { PlusOutlined } from '@ant-design/icons';
 
-export default function ContactList({setCurrentActiveUserChatId,showRequestModal,connections,setActiveUserName}:any) {
+export default function ContactList({setCurrentActiveUserChatId,showRequestModal,connections,setActiveUserName,fetchMessages}:any) {
   const [activeConnect,setActiveConnect]=useState<null | Number>(null);
   const [data,setData]  = useState<any>([]);
 
@@ -19,6 +19,7 @@ export default function ContactList({setCurrentActiveUserChatId,showRequestModal
     setActiveConnect(index);
     setCurrentActiveUserChatId(connections[index].chatId);
     setActiveUserName(connections[index].username);
+    fetchMessages(connections[index].chatId);
   }
   
   const transformToDataSource =(data:[])=>{
