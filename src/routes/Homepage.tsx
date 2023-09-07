@@ -60,13 +60,27 @@ export default function Homepage() {
           setNotifications(()=>[...notifs?.["data" as keyof object]]);
       }  
   };
+
+  const updateConnection = (data:Object)=>{
+    console.log("I am connection",connections);
+    if(!connections) return;
+    let con =  connections.map((item:any)=>{
+      if(item.username === data?.["from" as keyof Object]){
+          item['unseenCount'] = item['unseenCount']?item['unseenCount']+1:1
+      }
+      return item;
+    })
+    // con['unseenCount']=con['unseenCount']?con['unseenCount']++:1;
+    // console.log("Hi I am conn",con);
+    setConnections([...con])  ;
+  }
   
   
   if(socket){
     console.log("use effect at homepage")
     listenFrindRequests(socket,addToNotifaication);
     listenTyping(socket);
-    listenMessages(socket);
+    listenMessages(socket,updateConnection);
   }
   getNotifications();
     fetchConnections();
@@ -108,7 +122,8 @@ export default function Homepage() {
     let messageToSend = {
       to:activeUserName , // this will be fetched from a useState
       message:msg,
-      from:username
+      from:username,
+      chatId:activeUserChatId
     }
     sendMessage(socket,messageToSend);
   }
@@ -142,11 +157,12 @@ export default function Homepage() {
                 setActiveUserName={setActiveUserName}
                 connections = {connections}
                 fetchMessages={fetchMessages}
+                setConnections={setConnections}
               />
             
           </Sider>
           <Content style={{background:"#e1e6e2" }}>
-            <MessageArea sendMessage={sendMessageToUser}/>
+            <MessageArea sendMessage={sendMessageToUser} messages={messagesOfActiveChat} setMessagesOfActiveChat={setMessagesOfActiveChat}/>
             <ModalComp open={showSendConnectionRequestModal}
                 onCancel={()=>setShowSendConnectionRequestModal(false)}
                   onOk ={handleSendRequest}

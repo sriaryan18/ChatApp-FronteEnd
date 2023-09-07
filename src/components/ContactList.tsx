@@ -3,7 +3,7 @@ import {  useEffect, useState } from 'react'
 
 import { PlusOutlined } from '@ant-design/icons';
 
-export default function ContactList({setCurrentActiveUserChatId,showRequestModal,connections,setActiveUserName,fetchMessages}:any) {
+export default function ContactList({setCurrentActiveUserChatId,showRequestModal,connections,setActiveUserName,fetchMessages,setConnections}:any) {
   const [activeConnect,setActiveConnect]=useState<null | Number>(null);
   const [data,setData]  = useState<any>([]);
 
@@ -11,6 +11,7 @@ export default function ContactList({setCurrentActiveUserChatId,showRequestModal
   useEffect(()=>{
     if(connections){
       const ds = transformToDataSource(connections);
+      console.log("I sm ds",ds)
       setData(ds);
     }
   },[connections]);
@@ -20,10 +21,13 @@ export default function ContactList({setCurrentActiveUserChatId,showRequestModal
     setCurrentActiveUserChatId(connections[index].chatId);
     setActiveUserName(connections[index].username);
     fetchMessages(connections[index].chatId);
+    const con = connections;
+    con[index]['unseenCount']=0;
+    setConnections([...con]);
   }
   
   const transformToDataSource =(data:[])=>{
-     return data.map(item=>{return {title:item?.["username" as keyof Object]}})
+     return data.map(item=>{return {title:item?.["username" as keyof Object],unseenCount:item?.['unseenCount' as keyof Object] || 0}}) // unseen count is only present in the messages from Kafka so it needs to be merged 
   } 
 
 
@@ -64,7 +68,12 @@ export default function ContactList({setCurrentActiveUserChatId,showRequestModal
             avatar={<Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} size={55}/>}
             title= {
               <>
-            <h2>{item.title}</h2>
+            <h2 style={{display:'flex',flexDirection:'row',justifyContent:"space-between"}}>
+              {item.title}
+             {item.unseenCount>0? <div style={{borderRadius:50,background:'green' , display:'flex',justifySelf:'flex-end',flex:0.1,justifyContent:'center'}}>
+                {item.unseenCount}
+              </div>:null}
+              </h2>
           
           </>
           }//{<a href="https://ant.design">{item.title}</a>}

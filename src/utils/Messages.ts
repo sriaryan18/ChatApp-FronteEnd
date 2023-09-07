@@ -11,6 +11,6 @@ export const GetMessagesFromChatId =  async (chatId:string,token:string)=>{
         'Authorization':token
     }
     const response =await api.get(`chat?chatID=${chatId}`,null,requestHeader);
-    // console.log("I am response of get-notifications api",response)
+    console.log("I am response of get-notifications api",response)
     return response;
 }

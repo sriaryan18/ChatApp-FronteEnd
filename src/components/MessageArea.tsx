@@ -3,7 +3,7 @@ import { Button, Input } from 'antd'
 import MessageList from './MessageList'
 import { useState } from 'react'
 
-export default function MessageArea({sendMessage}:any) {
+export default function MessageArea({sendMessage,messages,setMessagesOfActiveChat}:any) {
 
   const [textInput,setTextInput] = useState('');
   const handleTextInputChange = (val:any)=>{
@@ -12,13 +12,18 @@ export default function MessageArea({sendMessage}:any) {
   const handleClick = ()=>{
     sendMessage(textInput);   
     setTextInput('');    
-    
+    const msg = [...messages];
+    const toBePushed = {
+      message:textInput
+    }
+    msg.push(toBePushed);
+    setMessagesOfActiveChat(()=>[...msg]);
   }
  
   return (
    <div style={{height:'88vh',display:'flex', flexDirection:'column'}}>
       <div style={{display:'flex',flex:0.92,overflowY:'auto'}}>
-        <MessageList/>
+        <MessageList messages={messages} setMessagesOfActiveChat={setMessagesOfActiveChat}/>
       </div>
       <div style={{display:'flex',flex:0.08, margin:20}}>
          <Input

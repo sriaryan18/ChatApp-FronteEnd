@@ -6,9 +6,10 @@ export const listenFrindRequests = (socket:any,setNotification:Function) =>{
     });
 }   
 
-export const listenMessages = (socket:any)=>{
+export const listenMessages = (socket:any,updateConnection:Function)=>{
     socket.on('message-personal',(data:any)=>{
         console.log("I received a message",data);
+        updateConnection(data);
     });
 };
 
