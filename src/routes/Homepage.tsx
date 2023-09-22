@@ -118,7 +118,7 @@ export default function Homepage() {
   }
 
   const sendMessageToUser = (msg:any)=>{
-    console.log("I am message",msg  );
+    console.log("I am message",msg);
     let messageToSend = {
       to:activeUserName , // this will be fetched from a useState
       message:msg,

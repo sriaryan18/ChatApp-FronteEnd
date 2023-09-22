@@ -1,5 +1,6 @@
 import { FloatButton, List } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
+import {AppContext} from "../AppContext.tsx";
 
 export default function MessageList({messages,setMessagesOfActiveChat}:any) {
     // const data = [
@@ -48,14 +49,15 @@ export default function MessageList({messages,setMessagesOfActiveChat}:any) {
 
     // ]
     const [data,setData] = useState([]);
-    
+    const appContext = useContext(AppContext);
+    const username = appContext.state.userInfo.username;
     useEffect(()=>{
-
         const preProcessMessages = ()=>{
             if(!messages) return;
            return  messages.map((item:any)=>{
                 return {
-                    title:item.message
+                    title:item.message,
+                    sender:item.sender
                 }
             })
         }
@@ -68,11 +70,12 @@ export default function MessageList({messages,setMessagesOfActiveChat}:any) {
             dataSource={data}
             itemLayout="horizontal"
             renderItem={(item:any,index)=>{
+                const orient = item.sender === username?true:false;
                 return (
                     <List.Item.Meta
                         title={
-                            <div style={{display:'flex', flexDirection:'row', justifyContent:index%2==0?'flex-end':'flex-start'}}>
-                            <div style={{  backgroundColor:index%2==0?"#76b586":"white", display:'flex', justifyContent:index%2==0?'flex-end':'flex-start', borderRadius:10, margin:15}}>
+                            <div style={{display:'flex', flexDirection:'row', justifyContent:orient?'flex-end':'flex-start'}}>
+                            <div style={{  backgroundColor:orient?"#76b586":"white", display:'flex', justifyContent:orient?'flex-end':'flex-start', borderRadius:10, margin:15}}>
                                 <h2 style={{margin:15}}>{item?.title || ""} </h2>
                             </div>
                             

@@ -1,11 +1,14 @@
 import { SendOutlined } from '@ant-design/icons'
 import { Button, Input } from 'antd'
 import MessageList from './MessageList'
-import { useState } from 'react'
+import {useContext, useState} from 'react'
+import {AppContext} from "../AppContext.tsx";
 
 export default function MessageArea({sendMessage,messages,setMessagesOfActiveChat}:any) {
 
   const [textInput,setTextInput] = useState('');
+  const appContext = useContext(AppContext);
+    const username = appContext.state.userInfo.username;
   const handleTextInputChange = (val:any)=>{
     setTextInput(val.target.value);
   }
@@ -14,7 +17,8 @@ export default function MessageArea({sendMessage,messages,setMessagesOfActiveCha
     setTextInput('');    
     const msg = [...messages];
     const toBePushed = {
-      message:textInput
+      message:textInput,
+        sender:username
     }
     msg.push(toBePushed);
     setMessagesOfActiveChat(()=>[...msg]);
