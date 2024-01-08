@@ -1,7 +1,6 @@
 import { Content, Header } from 'antd/es/layout/layout';
 import MessageArea from '../components/MessageArea';
-import { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../AppContext';
+import {  useEffect, useState } from 'react';
 import { listenFrindRequests, listenMessages, listenTyping } from '../Sockets/ListenRequests';
 import { sendConnectionRequestNotifs, sendMessage } from '../Sockets/SendMessages';
 import ContactList from '../components/ContactList';
@@ -13,9 +12,11 @@ import HeaderComponent from '../components/HeaderComponent';
 import { GetConnections, GetNotifications } from '../utils/connections';
 import { constants } from '../utils/Constants';
 import { GetMessagesFromChatId } from '../utils/Messages';
+import {useNavigate} from "react-router-dom";
+import {getUserCreds, userCreds} from '../utils/utils.ts'
 
 export default function Homepage() {
-  const appContext:any = useContext(AppContext);
+  const navigate = useNavigate();
   const [notifications,setNotifications] = useState<Array<any>>([]);
   const [connections,setConnections]:any = useState(null)
   const [activeUserChatId,setActiveUserChatId] = useState('khattu');  
@@ -23,11 +24,15 @@ export default function Homepage() {
   const [activeUserName,setActiveUserName] = useState('khattu')
   const [showSendConnectionRequestModal,setShowSendConnectionRequestModal] = useState(false);
   const [searchedUsername,setSearchedUsername] = useState("")
-  const username = appContext.state.userInfo.username;
-  const socket = appContext?.state.socket;
-  const token = appContext?.state?.authToken;
+  let creds:userCreds | null = null;
 
+  try{
+       creds = getUserCreds();
+  }catch (err){
+      navigate('/')
+  }
 
+  const {username, socket , token} : any = creds;
   const  addToNotifaication = (data:any)=>{
 
     setNotifications((prevState: any)=>{return [...prevState,data]});
@@ -61,11 +66,11 @@ export default function Homepage() {
       }  
   };
 
-  const updateConnection = (data:Object)=>{
+  const updateConnection = (data:object)=>{
     console.log("I am connection",connections);
     if(!connections) return;
-    let con =  connections.map((item:any)=>{
-      if(item.username === data?.["from" as keyof Object]){
+    const con =  connections.map((item:any)=>{
+      if(item.username === data?.["from" as keyof object]){
           item['unseenCount'] = item['unseenCount']?item['unseenCount']+1:1
       }
       return item;

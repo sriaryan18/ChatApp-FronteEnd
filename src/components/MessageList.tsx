@@ -1,14 +1,19 @@
-import { FloatButton, List } from 'antd'
-import React, {useContext, useEffect, useRef, useState} from 'react'
-import {AppContext} from "../AppContext.tsx";
+import {  List } from 'antd'
+import React, { useEffect, useState} from 'react'
+import {getUserCreds, userCreds} from "../utils/utils.ts";
+import {useNavigate} from "react-router-dom";
 
 export default function MessageList({messages,setMessagesOfActiveChat}:any) {
-
+    const navigate = useNavigate();
     const [data,setData] = useState([]);
    // const messageContainerRef = useRef(null);
-
-    const appContext = useContext(AppContext);
-    const username = appContext.state.userInfo.username;
+    let creds : userCreds | null=null;
+    try{
+        creds=getUserCreds();
+    }catch (err){
+        navigate('/')
+    }
+    const username  = creds?.username || '';
     useEffect(()=>{
         const preProcessMessages = ()=>{
             if(!messages) return;

@@ -8,6 +8,7 @@ import { SignIN } from "../utils/handleSignIn";
 import {  useNavigate } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import {  triggerSockts } from "../utils/SendSocketMessage";
+import { stringify } from 'flatted';
 
 
 
@@ -48,13 +49,17 @@ export default function Root() {
         }
         );
       }
-      const onlineResponse = await triggerSockts(apiResponse.data.token,value.username);
+    sessionStorage.setItem('userInfo', stringify({...apiResponse?.data}));
+
+    const onlineResponse = await triggerSockts(apiResponse.data.token,value.username);
       console.log("I am onlineResponse",onlineResponse)
       contextProvider?.dispatch({
         type:"ONLINE",
         payload:{...onlineResponse}
-      })
-      navigate('/homepage');
+      });
+    console.log(onlineResponse.socket)
+    sessionStorage.setItem('socket' , stringify(onlineResponse));
+    navigate('/homepage');
   }
 
    
