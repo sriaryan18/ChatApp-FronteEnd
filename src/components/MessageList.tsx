@@ -1,54 +1,12 @@
 import { FloatButton, List } from 'antd'
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import {AppContext} from "../AppContext.tsx";
 
 export default function MessageList({messages,setMessagesOfActiveChat}:any) {
-    // const data = [
-        // {
-        //     title:'HI'
-        // },
-        // {
-        //     title:'HI'
-        // },
 
-        // {
-        //     title:'HI'
-        // }, {
-        //     title:'HI'
-        // } ,{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // },{
-        //     title:'HI'
-        // }
-
-    // ]
     const [data,setData] = useState([]);
+   // const messageContainerRef = useRef(null);
+
     const appContext = useContext(AppContext);
     const username = appContext.state.userInfo.username;
     useEffect(()=>{
@@ -63,12 +21,23 @@ export default function MessageList({messages,setMessagesOfActiveChat}:any) {
         }
         const d = preProcessMessages();
         setData(d);
-    },[messages])
+
+    },[messages]);
+    useEffect(() => {
+        scrollToBottom();
+    }, [data]);
+    const scrollToBottom = () => {
+        const c =document.querySelector('.messagesArea');
+        if (c) {
+            c.scrollIntoView({block:'end', behavior: 'smooth', inline:'end' });
+        }
+    };
   return (
-        <div style={{ flexDirection:'column', flex:1,}}>
+        <div style={{ flexDirection:'column', flex:1,}}  >
         <List
             dataSource={data}
             itemLayout="horizontal"
+            className="messagesArea"
             renderItem={(item:any,index)=>{
                 const orient = item.sender === username?true:false;
                 return (
