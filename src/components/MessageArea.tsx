@@ -1,14 +1,21 @@
 import { SendOutlined } from '@ant-design/icons'
 import { Button, Input } from 'antd'
 import MessageList from './MessageList'
-import {useContext, useState} from 'react'
-import {AppContext} from "../AppContext.tsx";
+import { useState} from 'react'
+import {getUserCreds, userCreds} from "../utils/utils.ts";
+import {useNavigate} from "react-router-dom";
 
 export default function MessageArea({sendMessage,messages,setMessagesOfActiveChat}:any) {
 
   const [textInput,setTextInput] = useState('');
-  const appContext = useContext(AppContext);
-    const username = appContext.state.userInfo.username;
+    const navigate = useNavigate();
+    let creds : userCreds | null = null;
+    try{
+        creds=getUserCreds();
+    }catch (err){
+        navigate('/')
+    }
+    const username  = creds?.username || '';
   const handleTextInputChange = (val:any)=>{
     setTextInput(val.target.value);
   }
