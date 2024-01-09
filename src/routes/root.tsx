@@ -7,7 +7,6 @@ import SignInForm from "../components/SignInForm";
 import { SignIN } from "../utils/handleSignIn";
 import {  useNavigate } from "react-router-dom";
 import { AppContext } from "../AppContext";
-import {  triggerSockts } from "../utils/SendSocketMessage";
 import { stringify } from 'flatted';
 
 
@@ -50,15 +49,7 @@ export default function Root() {
         );
       }
     sessionStorage.setItem('userInfo', stringify({...apiResponse?.data}));
-
-    const onlineResponse = await triggerSockts(apiResponse.data.token,value.username);
-      console.log("I am onlineResponse",onlineResponse)
-      contextProvider?.dispatch({
-        type:"ONLINE",
-        payload:{...onlineResponse}
-      });
-    console.log(onlineResponse.socket)
-    sessionStorage.setItem('socket' , stringify(onlineResponse));
+    await contextProvider.getSocket();
     navigate('/homepage');
   }
 
