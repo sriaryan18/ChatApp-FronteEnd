@@ -1,6 +1,6 @@
 import { Content, Header } from 'antd/es/layout/layout';
 import MessageArea from '../components/MessageArea';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import { listenFrindRequests, listenMessages, listenTyping } from '../Sockets/ListenRequests';
 import { sendConnectionRequestNotifs, sendMessage } from '../Sockets/SendMessages';
 import ContactList from '../components/ContactList';
@@ -27,19 +27,25 @@ export default function Homepage() {
   const [showSendConnectionRequestModal, setShowSendConnectionRequestModal] = useState(false);
   const [searchedUsername, setSearchedUsername] = useState("")
   let creds: userCreds | null = null;
-  let socket : any = null;
-
- (async ()=> {
-    socket = await appContext.getSocket();
-  })()
-
-
+  const socketRef = useRef(appContext.getSocket());
+  const socket = socketRef.current;
   try {
     creds = getUserCreds();
   } catch (err) {
     navigate('/')
   }
 
+  function updateConnection(data: object) {
+    console.log("I am connection", connections);
+    if (!connections) return;
+    const con = connections.map((item: any) => {
+      if (item.username === data?.["from" as keyof object]) {
+        item['unseenCount'] = item['unseenCount'] ? item['unseenCount'] + 1 : 1
+      }
+      return item;
+    })
+    setConnections([...con]);
+  }
   const {username, token}: any = creds;
   const addToNotifaication = (data: any) => {
 
@@ -61,10 +67,12 @@ export default function Homepage() {
     });
     console.log(notifArr);
   }
-
+  useEffect(() => {
+    console.log(connections)
+  }, [connections]);
 
   useEffect(() => {
-    async function fetchConnections() {
+    (async ()=>{async function fetchConnections() {
       if (!connections) {
         const response: any = await GetConnections(username, token);
         if (response.status == 200) {
@@ -78,32 +86,19 @@ export default function Homepage() {
       if (notifs.status === 200) {
         setNotifications(() => [...notifs?.["data" as keyof object]]);
       }
-    };
-
-    const updateConnection = (data: object) => {
-      console.log("I am connection", connections);
-      if (!connections) return;
-      const con = connections.map((item: any) => {
-        if (item.username === data?.["from" as keyof object]) {
-          item['unseenCount'] = item['unseenCount'] ? item['unseenCount'] + 1 : 1
-        }
-        return item;
-      })
-      // con['unseenCount']=con['unseenCount']?con['unseenCount']++:1;
-      // console.log("Hi I am conn",con);
-      setConnections([...con]);
     }
+      await getNotifications();
+      await  fetchConnections();
 
+    })()
 
     if (socket) {
       console.log("use effect at homepage")
       listenFrindRequests(socket, addToNotifaication);
       listenTyping(socket);
       listenMessages(socket, updateConnection);
-    }
-    getNotifications();
-    fetchConnections();
 
+    }
     return () => {
 
       if (socket) {

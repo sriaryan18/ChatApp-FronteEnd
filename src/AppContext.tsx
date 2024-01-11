@@ -29,13 +29,13 @@ const reducer = (state:any,action:any) =>{
 export default function AppProvider({children}:any) {
     // const navigate = useNavigation();
   const [state,dispatch] = useReducer(reducer,initialState);
-  const getSocket = async () => {
+  const getSocket =  () => {
       const socket = state.socket;
       if(socket) return socket;
       else {
           const {username , token} : any = getUserCreds();
           if(username && token){
-              const onlineResponse = await triggerSockts(token,username);
+              const onlineResponse =  triggerSockts(token,username);
               dispatch({
                   type:"ONLINE",
                   payload:{...onlineResponse}

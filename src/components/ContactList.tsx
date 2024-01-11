@@ -21,7 +21,7 @@ export default function ContactList({setCurrentActiveUserChatId,showRequestModal
     setCurrentActiveUserChatId(connections[index].chatId);
     setActiveUserName(connections[index].username);
     fetchMessages(connections[index].chatId);
-    const con = connections;
+    const con = [...connections];
     con[index]['unseenCount']=0;
     setConnections([...con]);
   }

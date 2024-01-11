@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import {io} from 'socket.io-client';
-export const triggerSockts = async (token:string,username:string)=>{
+export const triggerSockts =  (token:string,username:string)=>{
     const socket = io(import.meta.env.VITE_SOCKET_HOST,{
         query:{
             token:token

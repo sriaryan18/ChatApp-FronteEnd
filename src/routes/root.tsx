@@ -49,7 +49,7 @@ export default function Root() {
         );
       }
     sessionStorage.setItem('userInfo', stringify({...apiResponse?.data}));
-    await contextProvider.getSocket();
+    // await contextProvider.getSocket();
     navigate('/homepage');
   }
 
