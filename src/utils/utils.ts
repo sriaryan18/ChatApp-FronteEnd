@@ -1,6 +1,11 @@
 import {parse} from "flatted";
+import {constants} from "./Constants.ts";
 
-
+const {
+    LISTEN_FRIEND_REQ,
+    LISTEN_TYPING,
+    LISTEN_MESSAGES
+} = constants;
 export type userCreds = {
     username:string,
     token: string,

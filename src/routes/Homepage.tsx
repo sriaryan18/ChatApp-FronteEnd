@@ -22,7 +22,7 @@ export default function Homepage() {
   const [notifications, setNotifications] = useState<Array<any>>([]);
   const [connections, setConnections]: any = useState(null)
   const [activeUserChatId, setActiveUserChatId] = useState('khattu');
-  const [messagesOfActiveChat, setMessagesOfActiveChat] = useState<Array<any>>([])
+  const [messagesOfActiveChat, setMessagesOfActiveChat] = useState<Array<any>>([]) // should be a derived state
   const [activeUserName, setActiveUserName] = useState('khattu')
   const [showSendConnectionRequestModal, setShowSendConnectionRequestModal] = useState(false);
   const [searchedUsername, setSearchedUsername] = useState("")
