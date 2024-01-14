@@ -12,8 +12,7 @@ export const SignIN = async (value:loginData)=>{
          return response;
         }
     }catch(err){
-         message.info("LOGIN FALIED")
-         console.log("I a err at login",err);
+         message.error("LOGIN FALIED")
          return {data:null}
     }
 }

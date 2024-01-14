@@ -95,7 +95,8 @@ export default function Homepage() {
     if (socket) {
       console.log("use effect at homepage")
       listenFrindRequests(socket, addToNotifaication);
-      listenTyping(socket);
+      listenTyping(socket, () => {
+      });
       listenMessages(socket, updateConnection);
 
     }

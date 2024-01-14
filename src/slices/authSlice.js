@@ -1,5 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {triggerSockets} from "../utils/SendSocketMessage";
 
 
 const initialState = {
@@ -9,7 +8,6 @@ const initialState = {
     token:'',
     profileImg:'',
     notifications:[],
-    socket:null,
 };
 
 export const authSlice = createSlice({
@@ -25,7 +23,6 @@ export const authSlice = createSlice({
 function setAuthDataFn(state,action){
     const { token, userInfo} = action.payload;
    const {username,name,email,notifications = {sent:[],received:[]}} = userInfo;
-    const socket = triggerSockets(token,username);
    state = {
        ...state,
        username,
@@ -33,7 +30,6 @@ function setAuthDataFn(state,action){
        email,
        notifications,
        token,
-       socket
    }
    return state;
 }

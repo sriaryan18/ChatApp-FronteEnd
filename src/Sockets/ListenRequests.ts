@@ -13,7 +13,7 @@ export const listenMessages = (socket:any,updateConnection:Function)=>{
     });
 };
 
-export const listenTyping =(socket:any)=>{
+export const listenTyping = (socket: any, p: (() => any) | any)=>{
     socket.on('typing-personal',(data:any)=>{
         console.log('I received a typing ', data)
     });

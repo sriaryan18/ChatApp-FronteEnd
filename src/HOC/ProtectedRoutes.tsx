@@ -1,17 +1,16 @@
 
 import {useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {getIsLoggedIn} from "../utils/utils.ts";
 
-function getIsLoggedIn(state:any){
-    return state.username && state.authToken;
-}
+
 
 export default function ProtectedRoutes({Component}:any) {
 
-    const isUserLoggedIn = useSelector(state => getIsLoggedIn(state));
-    const navigate = useNavigate();
+    const isUserLoggedIn = useSelector(state => getIsLoggedIn(state.auth));
     if(isUserLoggedIn){
         return <Component/>
-    }else navigate('/');
+    }else {
+       window.location.href = window.location.origin  // TODO : handle this with react-router-dom
+    };
   
 }

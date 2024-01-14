@@ -7,11 +7,14 @@ import {SignIN} from "../../utils/handleSignIn";
 import {useDispatch, useSelector} from "react-redux";
 import {setAuthData} from "../../slices/authSlice.js";
 import {SignUp} from "../../utils/handleSignUp";
+import {getIsLoggedIn} from "../../utils/utils";
+import {useNavigate} from "react-router-dom";
 
 const SIGNIN='signIn';
 const SIGNUP ='signup'
 
 export default function Login(){
+    const navigate =  useNavigate();
     const [formMode,setFormMode] = useState(SIGNIN);
     const dispatch = useDispatch();
 
@@ -20,7 +23,10 @@ export default function Login(){
     }
     async function signIn(value){
         const apiResponse = await SignIN(value);
-        dispatch(setAuthData(apiResponse.data));
+        if(apiResponse.data) {
+            dispatch(setAuthData(apiResponse.data));
+            navigate('/homepage')
+        }
     }
     async function signUp(value){
        await SignUp(value);
@@ -29,6 +35,7 @@ export default function Login(){
             username, password
         })
     }
+
 
     return (<ItemWrapper>
             <LoginContainer>

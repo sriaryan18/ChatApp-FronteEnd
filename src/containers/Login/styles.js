@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const LoginContainer = styled.div`
     display: flex;
     width: 20%;
-    padding: 50px;
+    padding: 2%;
     background-color: ghostwhite;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;

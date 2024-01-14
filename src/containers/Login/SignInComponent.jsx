@@ -5,6 +5,7 @@ export default  function SignInComponent({signIn,openSignUp}){
 
     return (
         <>
+            <h2>Sign In</h2>
             <Form name = 'signinForm' onFinish={signIn} layout='vertical'>
                 <Form.Item
                     label='Username'
@@ -16,7 +17,7 @@ export default  function SignInComponent({signIn,openSignUp}){
                         }
                     ]}
                 >
-                    <Input/>
+                    <Input autoFocus/>
                 </Form.Item>
                 <Form.Item
                     label = 'Password'

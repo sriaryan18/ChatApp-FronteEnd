@@ -1,16 +1,52 @@
 import {Button, Form, Input} from "antd";
+import {CheckUserNameAvailable} from "../../utils/handleSignUp";
+import debounce from "lodash/debounce";
+import {useState} from "react";
+
+const usernameStatus = {
+    AVAILABLE:1,
+    BLANK:0,
+    UN_AVAILABLE:2
+}
 
 export default function SignUpComponent({openSignIn,signUp}){
+    const { AVAILABLE, BLANK, UN_AVAILABLE} = usernameStatus;
+
+
+    const [isUsernameAvailable,setUsernameAvailable] = useState(BLANK);
+    async function checkUsername(value){
+        if(!value){
+            setUsernameAvailable(BLANK);
+            return;
+        }
+        const res = await CheckUserNameAvailable(value);
+        setUsernameAvailable(() => res ? AVAILABLE : UN_AVAILABLE);
+    }
+   const debouncedCheckUsername = debounce(checkUsername,300);
+
+    const validateStatus = isUsernameAvailable === AVAILABLE ? 'success' :
+        isUsernameAvailable === UN_AVAILABLE ? 'error' : null;
+    const help = validateStatus === 'error' ? 'Username is not available' :'';
+    const hasFeedback = isUsernameAvailable !== BLANK ;
     return(
         <>
+            <h2>Sign Up</h2>
             <Form name='signUp' onFinish={signUp} layout='vertical'>
-                <Form.Item name='username' label="Username" rules={[
+                <Form.Item name='username' label="Username"
+                           rules={[
                     {
                         required:true,
                         message:'Username is mandatory to Login'
                     }
-                ]} >
-                    <Input/>
+                ]}
+                           validateStatus={validateStatus}
+                           help={help}
+                           hasFeedback={hasFeedback}
+                >
+                    <Input
+                        onChange ={(e) => debouncedCheckUsername(e.target.value)}
+                        autoFocus
+                    />
                 </Form.Item>
                 <Form.Item name='name' label='Name' rules={[
                     {
@@ -58,12 +94,12 @@ export default function SignUpComponent({openSignIn,signUp}){
                     <Input.Password/>
                 </Form.Item>
                 <Form.Item>
-                    <Button type='primary' name='submit' htmlType='submit'>
+                    <Button type='primary' name='submit' htmlType='submit' disabled={isUsernameAvailable !== AVAILABLE}>
                         Sign Up
                     </Button>
                 </Form.Item>
             </Form>
-            <Button type='link' onClick={openSignIn}>
+            <Button type='link' onClick={openSignIn} >
                 Sign In
             </Button>
         </>

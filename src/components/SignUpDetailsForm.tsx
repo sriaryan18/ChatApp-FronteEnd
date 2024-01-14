@@ -22,7 +22,7 @@ export default function SignUpDetailsForm({onFinish,handleCancel,checkUserName}:
     <Form onFinish={(formData)=>{onFinish(formData);form.resetFields();}} form={form}>
        <Form.Item style={{marginRight:10,width:"90%"}}
         rules={[
-          { required: true && ! availableUsername, message: "Please input Username" },
+          { required: !availableUsername, message: "Please input Username" },
           
         ]}
         label="Username" name="username"

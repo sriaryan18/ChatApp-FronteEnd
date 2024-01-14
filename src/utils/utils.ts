@@ -21,3 +21,6 @@ export const getUserCreds = () : userCreds | null => {
     return null;
 
 }
+export function getIsLoggedIn(state:any){
+    return !!(state.username && state.token);
+}
