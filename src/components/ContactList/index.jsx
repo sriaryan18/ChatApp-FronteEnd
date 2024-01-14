@@ -53,7 +53,7 @@ export default function ContactList(){
                                         <>
                                             <h2 style={getListItemStyle()}>
                                                 {item.title}
-                                                {item.unseenCount!==0? <div>
+                                                {item.unseenCount!==0? <div style={{marginRight:'10px'}}>
                                                     {item.unseenCount}
                                                 </div>:null}
                                             </h2>
@@ -91,7 +91,7 @@ const getListItemStyle = () =>{
         display:'flex',
         flexDirection:'row',
         justifyContent:'space-between',
-        padding:'10px'
+        // padding:'10px'
     }
 }
 
