@@ -3,6 +3,8 @@ import {useEffect, useRef} from "react";
 import {triggerSockets} from "../../utils/SendSocketMessage";
 import {message} from "antd";
 import {listenFrindRequests, listenMessages, listenTyping} from "../../Sockets/ListenRequests";
+import {ItemWrapper, StyledContactListContainer} from "./Styles.js";
+import ContactList from "../../components/ContactList/index";
 
 export default function HomePage(){
 
@@ -32,6 +34,10 @@ export default function HomePage(){
     },[token, username]);
 
     return (
-        <h1>I am home Page</h1>
+        <ItemWrapper>
+            <StyledContactListContainer>
+                <ContactList/>
+            </StyledContactListContainer>
+        </ItemWrapper>
     )
 }

@@ -2,11 +2,11 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
     messages:[],
-    activeChatId : '',
 }
 
 export const messageSlice = createSlice({
     name: 'message',
+    initialState,
     reducers:{
         addNewMessage : (state,action) => addNewMessageFn(state,action),
     }

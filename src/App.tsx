@@ -4,6 +4,7 @@ import {Provider} from "react-redux";
 import {configureStore} from "@reduxjs/toolkit";
 import authReducer from './slices/authSlice';
 import messageReducer from './slices/messageSlice';
+import connectionReducer from './slices/connectionSlice'
 import React from "react";
 
 const Login:any = React.lazy(()=>import('./containers/Login/index'));
@@ -13,6 +14,7 @@ const store = configureStore(({
     reducer:{
         auth: authReducer,
         message: messageReducer,
+        connection: connectionReducer
     },
 
 }))
