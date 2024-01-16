@@ -13,7 +13,7 @@ const HomePage = React.lazy(() => import('./containers/HomePage/index'))
 const store = configureStore(({
     reducer:{
         auth: authReducer,
-        message: messageReducer,
+        messages: messageReducer,
         connection: connectionReducer
     },
 

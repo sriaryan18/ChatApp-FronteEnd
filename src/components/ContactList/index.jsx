@@ -4,6 +4,7 @@ import {GetConnections} from "../../utils/connections";
 import {addConnections , setActiveChatId} from '../../slices/connectionSlice';
 import ContactListSkeleton from "./ContactListSkeleton";
 import {Avatar, List} from "antd";
+import {setMessagesOfActiveChat} from "../../slices/messageSlice.js";
 
 export default function ContactList(){
 
@@ -11,8 +12,14 @@ export default function ContactList(){
     const connectionSelector = useSelector(state => state.connection);
     const authSelector = useSelector(state => state.auth);
     const {connections} = connectionSelector;
-
+    function handleKeyPress(event){
+        if(event.keyCode === 27){
+            dispatch(setActiveChatId(''));
+            dispatch(setMessagesOfActiveChat([]))
+        }
+    }
     useEffect(() => {
+        document.addEventListener('keydown', handleKeyPress);
         async function fetchConnections() { // TODO : modify this api to bring names as well
             if (!connections.length) {
                 const { username, token} = authSelector;
@@ -23,6 +30,10 @@ export default function ContactList(){
             }
         }
          fetchConnections().then(()=>{});
+        return ()=> {
+            document.removeEventListener('keydown', handleKeyPress);
+
+        }
     }, []);
 
     function handleClick(index){
@@ -32,7 +43,7 @@ export default function ContactList(){
     const data = transformToDataSource(connections);
     const activeChatId = connectionSelector.activeChatId;
     return(
-        <div className='contactList'>
+        <div className='contactList' style={{overflowY:'auto'}}>
             {
                 connections.length ?
                     <List
@@ -47,7 +58,8 @@ export default function ContactList(){
                                     style={getListStyles(activeChatId,connections[index]?.chatId)}
                                     avatar={<Avatar
                                         src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                                        size={55}/>
+                                        size={55}
+                                    />
                                 }
                                     title= {
                                         <>
@@ -78,11 +90,12 @@ export default function ContactList(){
 const getListStyles = (activeChatId,currentChatId) => {
     return {
         background : activeChatId === currentChatId ? 'gray' : 'white',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.6)',
+        // boxShadow: '0 0 10px rgba(0, 0, 0, 0.6)',
         borderRadius: '5px',
-        padding: '1px',
+        // padding: '1px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        margin:'-5px'
     }
 }
 

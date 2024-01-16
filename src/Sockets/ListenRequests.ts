@@ -1,3 +1,5 @@
+import {useSelector} from "react-redux";
+
 export const listenFrindRequests = (socket:any,setNotification:Function) =>{
     console.log("friendrequet Listening.....", socket);
     socket.on('friendRequest',(data:any)=>{
@@ -8,7 +10,7 @@ export const listenFrindRequests = (socket:any,setNotification:Function) =>{
 
 export const listenMessages = (socket:any,updateConnection:Function)=>{
     socket.on('message-personal',(data:any)=>{
-        console.log("I received a message",data);
+        console.log("I received a message" + Date.now(),data);
         updateConnection(data);
     });
 };

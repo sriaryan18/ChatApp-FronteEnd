@@ -9,15 +9,18 @@ export const messageSlice = createSlice({
     initialState,
     reducers:{
         addNewMessage : (state,action) => addNewMessageFn(state,action),
+        setMessagesOfActiveChat : (state,action) => setMessagesOfActiveChatFn(state,action),
     }
 })
 
 function addNewMessageFn(state,action){
-    // const newMessage = action.payload;
-    // const {to , from , message, chatId} = newMessage;
+    state.messages = [...state.messages,action.payload];
 
 }
+function setMessagesOfActiveChatFn(state,action){
+    state.messages = [...action.payload];
+}
 
-export const { addNewMessage } = messageSlice.actions;
+export const { addNewMessage,setMessagesOfActiveChat } = messageSlice.actions;
 
 export default messageSlice.reducer;
