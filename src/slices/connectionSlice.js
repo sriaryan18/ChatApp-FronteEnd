@@ -18,7 +18,7 @@ export const connectionSlice = createSlice({
 })
 
 function addNewConnectionFn(state , action){
-    
+    state.connections = [...state.connections,action.payload];
 }
 
 function setUnseenMsgFn(state,action){

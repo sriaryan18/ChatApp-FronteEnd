@@ -4,7 +4,10 @@ import {io} from "socket.io-client";
 import {message} from "antd";
 import {listenFrindRequests, listenMessages, listenTyping} from "../Sockets/ListenRequests";
 import {addNewMessage} from "../slices/messageSlice";
-import {setUnseenMsg} from "../slices/connectionSlice";
+import {addConnections, setUnseenMsg} from "../slices/connectionSlice";
+import {addNotification} from "../slices/authSlice.js";
+import {constants} from "../utils/Constants";
+import {GetConnections} from "../utils/connections";
 
 export default function useSocket(){
     const [socket , setSocket] = useState(null);
@@ -21,7 +24,7 @@ export default function useSocket(){
             message.info("You are now Online");
             soc.emit("iAmOnline",{username})
         });
-        listenFrindRequests(soc,()=>{});
+        listenFrindRequests(soc,receiveNotifications);
         listenTyping(soc,()=>{});
         setSocket(soc);
         return ()=>{
@@ -43,6 +46,17 @@ export default function useSocket(){
             listenMessages(socket,receiveMsg);
         }
     }, );
+
+    const receiveNotifications =async  (data) => {
+        dispatch(addNotification(data));
+        if(data.type === constants.ACCEPT_TYPE){
+            const response = await GetConnections(username, token);
+            if (response.status === 200) {
+                dispatch(addConnections(response.data));
+            }
+        }
+    }
+
      const receiveMsg = (msg) => {
         const {chatId} = msg;
         if(chatId === activeChatId){
@@ -56,9 +70,9 @@ export default function useSocket(){
         socket.emit('message-personal-server',message);
     }
      const sendConnectionRequestNotifs = (message)=>{
-        console.log("Sending,,,,")
-        socket.emit('friend-request',message);
+        socket.emit('friendRequest',message);
     }
+
 
 
 

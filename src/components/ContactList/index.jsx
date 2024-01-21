@@ -65,7 +65,7 @@ export default function ContactList(){
                                         <>
                                             <h2 style={getListItemStyle()}>
                                                 {item.title}
-                                                {item.unseenCount!==0? <div style={{marginRight:'10px'}}>
+                                                {item.unseenCount!==0? <div style={{marginRight:'10px',color:'green'}}>
                                                     {item.unseenCount}
                                                 </div>:null}
                                             </h2>
