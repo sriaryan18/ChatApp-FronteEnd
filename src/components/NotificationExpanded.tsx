@@ -2,6 +2,11 @@ import { Avatar } from "antd";
 import ButtonComp from "./Button";
 
 export default function NotificationExpanded({notification,accept,reject}:any){
+
+    function handleReject(){
+        const {originatedFromUsername = '' } = notification;
+        reject({originatedFromUsername});
+    }
     
     return (
         
@@ -38,7 +43,7 @@ export default function NotificationExpanded({notification,accept,reject}:any){
                         styles={{border:'2px solid #e31010'}} 
                         label="reject"
                         key={1} 
-                        onClick={reject}
+                        onClick={handleReject}
                     />
                 </div>
             }

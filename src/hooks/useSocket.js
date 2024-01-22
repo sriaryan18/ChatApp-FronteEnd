@@ -5,7 +5,7 @@ import {message} from "antd";
 import {listenFrindRequests, listenMessages, listenTyping} from "../Sockets/ListenRequests";
 import {addNewMessage} from "../slices/messageSlice";
 import {addConnections, setUnseenMsg} from "../slices/connectionSlice";
-import {addNotification} from "../slices/authSlice.js";
+import {addNotification} from "../slices/authSlice";
 import {constants} from "../utils/Constants";
 import {GetConnections} from "../utils/connections";
 
@@ -73,10 +73,13 @@ export default function useSocket(){
         socket.emit('friendRequest',message);
     }
 
+    const deleteFriendRequest = (data) => {
+        socket.emit('friendRequestDelete',data);
+    }
 
 
 
-    return {socket,sendMessage,sendConnectionRequestNotifs};
+    return {socket,sendMessage,sendConnectionRequestNotifs,deleteFriendRequest};
 
 
 }

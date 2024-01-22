@@ -42,12 +42,15 @@ export default function MessageArea(){
                     !activeChatId ?
                         <Image src={image}/> : (
                             <>
-                                <MessageList messages={preProcessedMsg} username={username}/>
+                                <MessageList
+                                    messages={preProcessedMsg}
+                                    username={username}
+                                />
                             </>
                         )
                 }
             </div>
-            {activeChatId && <MessageBox/>}
+            {activeChatId && <MessageBox key={activeChatId}/>}
         </div>
 
     );

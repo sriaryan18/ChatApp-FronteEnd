@@ -5,16 +5,16 @@ import {useDispatch, useSelector} from "react-redux";
 import ModalComp from "../Modal";
 import NotificationExpanded from "../NotificationExpanded";
 import {constants} from "../../utils/Constants";
-import {deleteNotifications} from '../../slices/authSlice.js';
+import {deleteNotifications} from '../../slices/authSlice';
 import {SocketContext} from "../../utils/utils";
 import {AddOrDeleteConnection} from "../../utils/connections";
-import {addNewConnection} from "../../slices/connectionSlice.js";
+import {addNewConnection} from "../../slices/connectionSlice";
 
 export default function Notifications(){
     const [notificationIdx,setNotificationIdx] = useState(null);
     const dispatch = useDispatch();
     const {notifications:{notificationsReceived},username,token} = useSelector(state => state.auth);
-    const {sendConnectionRequestNotifs} = useContext(SocketContext);
+    const {sendConnectionRequestNotifs, deleteFriendRequest} = useContext(SocketContext);
     const menus= useMemo(()=>{
         return notificationsReceived.map((item, index) => {
             return {
@@ -38,14 +38,12 @@ export default function Notifications(){
             originatedFromUsername:username,
             type:constants.ACCEPT_TYPE
         }
-        if(type === 'request')
-            sendConnectionRequestNotifs(msg);
+        if(type === 'request') sendConnectionRequestNotifs(msg);
         setNotificationIdx(null);
 
         const res =
             await AddOrDeleteConnection(token,destinatedUsername,username,constants.REQUEST_TYPE);
         if(res.status === 200){
-            console.log("I am response of add or delete ",destinatedUsername);
             dispatch(deleteNotifications({username:destinatedUsername,type}, type));
             dispatch(addNewConnection({
                 username:destinatedUsername,
@@ -53,8 +51,28 @@ export default function Notifications(){
             }))
         }
     }
-    function rejectRequest(){
+    function rejectRequest(data){
+        const type = constants.REQUEST_TYPE;
+        const {originatedFromUsername} = data;
+        const payload = {
+            originatedFromUsername,
+            destinatedUsername: username,
+        }
+        deleteFriendRequest(payload);
+        dispatch(deleteNotifications({username:originatedFromUsername,type}, type));
+        setNotificationIdx(null);
 
+    }
+    function handleClose(){
+        const {type, originatedFromUsername} = notificationsReceived[notificationIdx];
+        if(type === constants.ACCEPT_TYPE){
+            dispatch(deleteNotifications({username:originatedFromUsername,type}, type));
+        }
+        deleteFriendRequest({
+            originatedFromUsername,
+            destinatedUsername:username,
+        })
+        setNotificationIdx(null);
     }
 
     const showModal = notificationIdx !== null;
@@ -62,7 +80,7 @@ export default function Notifications(){
         <>
             <ModalComp
                 visible ={showModal}
-                onCancel = {()=>setNotificationIdx(null)}
+                onCancel = {handleClose}
                 okButtonProps={{style:{display:'none'}}}
                 cancelButtonProps={{ style: { display: 'none' } }}
                 bodyStyle={{minHeight: 300}}
