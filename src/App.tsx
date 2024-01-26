@@ -7,7 +7,7 @@ import messageReducer from './slices/messageSlice';
 import connectionReducer from './slices/connectionSlice'
 import React from "react";
 
-const Login:any = React.lazy(()=>import('./containers/Login/index'));
+const Login = React.lazy(()=>import('./containers/Login/index'));
 const HomePage = React.lazy(() => import('./containers/HomePage/index'))
 
 const store = configureStore(({
