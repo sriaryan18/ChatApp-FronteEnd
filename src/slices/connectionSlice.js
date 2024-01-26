@@ -34,6 +34,7 @@ function setUnseenMsgFn(state,action){
 function addConnectionsFn(state,action){
     const  connections  = action.payload;
     state.connections = [...connections];
+    return state;
 }
 
 function setActiveChatIdFn(state , action){
