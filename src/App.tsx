@@ -1,20 +1,32 @@
 import { Route, Routes } from "react-router-dom"
-import Root from "./routes/root"
-import Homepage from "./routes/Homepage"
-import AppProvider from "./AppContext"
 import ProtectedRoutes from "./HOC/ProtectedRoutes"
+import {Provider} from "react-redux";
+import {configureStore} from "@reduxjs/toolkit";
+import authReducer from './slices/authSlice';
+import messageReducer from './slices/messageSlice';
+import connectionReducer from './slices/connectionSlice'
+import React from "react";
 
+const Login = React.lazy(()=>import('./containers/Login/index'));
+const HomePage = React.lazy(() => import('./containers/HomePage/index'))
 
+const store = configureStore(({
+    reducer:{
+        auth: authReducer,
+        messages: messageReducer,
+        connection: connectionReducer
+    },
+
+}))
 function App() {
   return(
     <>
-     <AppProvider>
+     <Provider store={store} >
       <Routes>
-          <Route path="/" element={<Root/>}/> 
-          <Route path="homepage" element ={<ProtectedRoutes Component={Homepage} props={""}/>}></Route>
-          
+          <Route path="/" element={<Login/>} />
+          <Route path="homepage" element ={<ProtectedRoutes Component={HomePage}/>}></Route>
       </Routes>
-     </AppProvider>
+     </Provider>
     
     </>
   )

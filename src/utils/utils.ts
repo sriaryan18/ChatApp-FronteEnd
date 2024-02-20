@@ -1,6 +1,5 @@
 import {parse} from "flatted";
-
-
+import React from "react";
 export type userCreds = {
     username:string,
     token: string,
@@ -16,3 +15,8 @@ export const getUserCreds = () : userCreds | null => {
     return null;
 
 }
+export function getIsLoggedIn(state:any){
+    return !!(state.username && state.token);
+}
+
+export const SocketContext = React.createContext(null);

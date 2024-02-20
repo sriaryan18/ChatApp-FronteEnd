@@ -1,12 +1,7 @@
 import api from "./Axios";
-export const  SignUp = async (value:any)=>{
-    const reqData ={    
-    "username":value.username,
-    "password":value.password,
-    "name":value.fullName,
-    "email":"sri.aryan18@gmail.com"
-    }
-    const response = await api.post("/user/register",reqData);
+export const  SignUp = async (value:any)=> {
+
+    return await api.post("/user/register", value);
 }
 
 export const CheckUserNameAvailable = async (username:any) =>{

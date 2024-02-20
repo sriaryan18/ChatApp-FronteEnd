@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react'
 import {getUserCreds} from "./utils/utils.ts";
-import {triggerSockts} from "./utils/SendSocketMessage.ts";
+import {triggerSockets} from "./utils/SendSocketMessage.ts";
 import {useNavigation} from "react-router-dom";
 
 export const AppContext = createContext({});

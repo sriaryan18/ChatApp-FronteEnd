@@ -4,6 +4,6 @@ export const sendMessage = (socket:any,message:any)=>{
 
 export const sendConnectionRequestNotifs = (socket:any,message:any)=>{ 
     console.log("Sending,,,,")
-    socket.emit('friend-request',message);
+    // socket.emit('friendRequest',message);
 }
 
